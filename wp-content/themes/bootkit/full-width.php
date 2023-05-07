@@ -3,11 +3,9 @@
 * Template Name: Full Width Page
 * Template Post Type: post, page, movies
 */
-get_header("v2"); ?>
-<!-- Page Content -->
+get_header(); ?>
 <div class="container">
     <div class="row">
-        <!-- Post Content Column -->
         <div class="col-lg-12">
             <?php
             while (have_posts()) {

@@ -1,7 +1,7 @@
 <?php $unique_id = esc_attr(uniqid('search-form-')); ?>
 <!-- Search Widget -->
 <div class="card my-4">
-    <h5 class="card-header">Search</h5>
+    <h5 class="card-header"><?php _e('Search')?></h5>
     <div class="card-body">
         <form role="search" method="get" class="search-form" action="<?php echo home_url('/'); ?>">
             <div class="input-group">
