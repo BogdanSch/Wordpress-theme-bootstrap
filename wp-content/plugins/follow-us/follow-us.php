@@ -14,10 +14,13 @@ if ( !function_exists( 'add_action' ) ) {
     echo "Hi there! I'm just a plugin, no much I can do when called directly.";
     exit;
 }
-
+//Includes
+$plugin_dir = WP_PLUGIN_DIR . '/follow-us';
+include "includes/enqueue.php";
+//Plugin
 function follow_us_to_post_content($content)
 {
-    return '<div class="follow"><a href="https://www.instagram.com/bogsvity_777/" target="_blank">'.__('Follow us').'<i class="fa-regular fa-heart"></i></a></div>' . $content;
+    return '<div class="follow"><a href="https://www.instagram.com/bogsvity_777/" target="_blank">'.__('Follow us').'<i class="fa fa-heart"></i></a></div>' . $content;
 }
 add_filter('the_content', 'follow_us_to_post_content');
 //Add localization

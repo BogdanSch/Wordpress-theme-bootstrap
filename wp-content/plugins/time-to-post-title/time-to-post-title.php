@@ -21,3 +21,9 @@ function time_load_plugin_textdomain()
     load_plugin_textdomain('time-to-post-title', false, dirname(plugin_basename(__FILE__)) . '/languages/');
 }
 add_action('plugins_loaded', 'time_load_plugin_textdomain');
+
+// function time_shortcode($atts)
+// {
+//     return time_to_post_content($content);
+// }
+// add_shortcode('time_to_post', 'time_shortcode');
