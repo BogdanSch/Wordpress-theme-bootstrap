@@ -32,6 +32,23 @@ if(!class_exists('\\WPAICG\\WPAICG_Embeddings')) {
                 add_action('admin_footer',[$this,'wpaicg_instant_embedding_footer']);
                 add_action('wp_ajax_wpaicg_instant_embedding',[$this,'wpaicg_instant_embedding']);
             }
+            /*Pinecone sync Indexes*/
+            add_action('wp_ajax_wpaicg_pinecone_indexes',[$this,'wpaicg_pinecone_indexes']);
+        }
+
+        public function wpaicg_pinecone_indexes()
+        {
+            if ( ! wp_verify_nonce( $_POST['nonce'], 'wpaicg-ajax-nonce' ) ) {
+                die(WPAICG_NONCE_ERROR);
+            }
+            $indexes = sanitize_text_field(str_replace("\\",'',$_REQUEST['indexes']));
+            update_option('wpaicg_pinecone_indexes',$indexes);
+            if(isset($_REQUEST['api_key']) && !empty($_REQUEST['api_key'])){
+                update_option('wpaicg_pinecone_api', sanitize_text_field($_REQUEST['api_key']));
+            }
+            if(isset($_REQUEST['server']) && !empty($_REQUEST['server'])){
+                update_option('wpaicg_pinecone_sv', sanitize_text_field($_REQUEST['server']));
+            }
         }
 
         public function wpaicg_instant_embedding()
@@ -296,7 +313,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Embeddings')) {
         {
             global $wpdb;
             $wpaicg_result = array('status' => 'success', 'msg' => esc_html__('Something went wrong','gpt3-ai-content-generator'));
-            if ( ! wp_verify_nonce( $_POST['nonce'], 'wpaicg-ajax-nonce' ) ) {
+            if ( ! wp_verify_nonce( $_REQUEST['nonce'], 'wpaicg-ajax-nonce' ) ) {
                 $wpaicg_result['status'] = 'error';
                 $wpaicg_result['msg'] = WPAICG_NONCE_ERROR;
                 wp_send_json($wpaicg_result);

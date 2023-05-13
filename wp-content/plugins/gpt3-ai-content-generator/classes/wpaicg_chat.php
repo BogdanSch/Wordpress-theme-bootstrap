@@ -226,6 +226,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                         'embedding' =>  false,
                         'embedding_type' =>  false,
                         'embedding_top' =>  false,
+                        'embedding_index' => '',
                         'no_answer' => '',
                         'fontsize' => 13,
                         'fontcolor' => '#fff',
@@ -282,6 +283,9 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                     $wpaicg_chat_best_of = isset($wpaicg_settings['best_of']) && !empty($wpaicg_settings['best_of']) ? $wpaicg_settings['best_of'] :$wpaicg_chat_best_of;
                     $wpaicg_chat_frequency_penalty = isset($wpaicg_settings['frequency_penalty']) && !empty($wpaicg_settings['frequency_penalty']) ? $wpaicg_settings['frequency_penalty'] :$wpaicg_chat_frequency_penalty;
                     $wpaicg_chat_presence_penalty = isset($wpaicg_settings['presence_penalty']) && !empty($wpaicg_settings['presence_penalty']) ? $wpaicg_settings['presence_penalty'] :$wpaicg_chat_presence_penalty;
+                    if(isset($wpaicg_settings['embedding_index']) && !empty($wpaicg_settings['embedding_index'])){
+                        $wpaicg_pinecone_environment = $wpaicg_settings['embedding_index'];
+                    }
                     if(is_user_logged_in() && $wpaicg_settings['user_limited'] && $wpaicg_settings['user_tokens'] > 0){
                         $wpaicg_limited_tokens = true;
                         $wpaicg_limited_tokens_number = $wpaicg_settings['user_tokens'];
@@ -380,6 +384,9 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                         $wpaicg_moderation_model = $wpaicg_chat_pro->model($wpaicg_chat_widget);
                         $wpaicg_moderation_notice = $wpaicg_chat_pro->notice($wpaicg_chat_widget);
                     }
+                    if(isset($wpaicg_chat_widget['embedding_index']) && !empty($wpaicg_chat_widget['embedding_index'])){
+                        $wpaicg_pinecone_environment = $wpaicg_chat_widget['embedding_index'];
+                    }
                 }
                 if(isset($_REQUEST['bot_id']) && !empty($_REQUEST['bot_id'])){
                     $wpaicg_bot = get_post(sanitize_text_field($_REQUEST['bot_id']));
@@ -457,6 +464,9 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                             $wpaicg_moderation_notice = $wpaicg_chat_pro->notice($wpaicg_chat_widget);
                         }
                         $wpaicg_chat_source = $wpaicg_bot_type.'ID: '.$wpaicg_bot->ID;
+                        if(isset($wpaicg_chat_widget['embedding_index']) && !empty($wpaicg_chat_widget['embedding_index'])){
+                            $wpaicg_pinecone_environment = $wpaicg_chat_widget['embedding_index'];
+                        }
                     }
                 }
                 if(!is_user_logged_in()){
@@ -928,7 +938,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                 }
             }
             else{
-                $wpaicg_result['data'] = esc_html__('Missing PineCone Settings','gpt3-ai-content-generator');
+                $result['data'] = esc_html__('Missing PineCone Settings','gpt3-ai-content-generator');
             }
             return $result;
         }

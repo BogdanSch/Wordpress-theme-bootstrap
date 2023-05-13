@@ -72,8 +72,13 @@ $wpaicg_chat_fullscreen = false;
 $wpaicg_elevenlabs_api = get_option('wpaicg_elevenlabs_api', '');
 $wpaicg_google_api_key = get_option('wpaicg_google_api_key', '');
 $wpaicg_google_voices = get_option('wpaicg_google_voices',[]);
+$wpaicg_pinecone_indexes = get_option('wpaicg_pinecone_indexes','');
+$wpaicg_pinecone_indexes = empty($wpaicg_pinecone_indexes) ? array() : json_decode($wpaicg_pinecone_indexes,true);
 ?>
 <style>
+    .wp-picker-holder{
+        z-index: 99;
+    }
     .wpaicg-bot-wizard{}
     .wpaicg-bot-wizard .wpaicg-mb-10{}
     .wpaicg-bot-wizard .wpaicg-form-label{
@@ -806,6 +811,17 @@ $wpaicg_google_voices = get_option('wpaicg_google_voices',[]);
                         <input type="checkbox" value="1" name="bot[embedding]" id="wpaicg_chat_embedding" class="asdisabled wpaicg_chatbot_embedding">
                     </div>
                     <div class="wpaicg-mb-10">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Pinecone Index','gpt3-ai-content-generator')?>:</label>
+                        <select disabled name="bot[embedding_index]" id="wpaicg_chat_embedding_index" class="asdisabled wpaicg_chatbot_embedding_index">
+                            <option value=""><?php echo esc_html__('Default','gpt3-ai-content-generator')?></option>
+                            <?php
+                            foreach($wpaicg_pinecone_indexes as $wpaicg_pinecone_index){
+                                echo '<option value="'.esc_html($wpaicg_pinecone_index['url']).'">'.esc_html($wpaicg_pinecone_index['name']).'</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="wpaicg-mb-10">
                         <label class="wpaicg-form-label"><?php echo esc_html__('Method','gpt3-ai-content-generator')?>:</label>
                         <select disabled name="bot[embedding_type]" id="wpaicg_chat_embedding_type" class="asdisabled wpaicg_chatbot_embedding_type">
                             <option value="openai"><?php echo esc_html__('Embeddings + Completion','gpt3-ai-content-generator')?></option>
@@ -1409,6 +1425,7 @@ $wpaicg_bots = new WP_Query($args);
                 $('.wpaicg_chatbot_embedding').prop('checked', false);
                 $('.wpaicg_chatbot_embedding').attr('disabled','disabled');
                 $('.wpaicg_chatbot_embedding_type').attr('disabled','disabled');
+                $('.wpaicg_chatbot_embedding_index').attr('disabled','disabled');
                 $('.wpaicg_chatbot_embedding_top').attr('disabled','disabled');
             }
             if(footer !== ''){
@@ -1716,7 +1733,11 @@ $wpaicg_bots = new WP_Query($args);
                     modalContent.find('.wpaicg_chatbot_embedding').removeClass('asdisabled');
                     modalContent.find('.wpaicg_chatbot_embedding').prop('checked',true);
                     modalContent.find('.wpaicg_chatbot_embedding_type').removeAttr('disabled');
+                    modalContent.find('.wpaicg_chatbot_embedding_type').removeClass('asdisabled');
+                    modalContent.find('.wpaicg_chatbot_embedding_index').removeAttr('disabled');
+                    modalContent.find('.wpaicg_chatbot_embedding_index').removeClass('asdisabled');
                     modalContent.find('.wpaicg_chatbot_embedding_top').removeAttr('disabled');
+                    modalContent.find('.wpaicg_chatbot_embedding_top').removeClass('asdisabled');
                 }
                 if(key === 'limited_roles'){
                     if(typeof field === 'object'){
@@ -1815,6 +1836,8 @@ $wpaicg_bots = new WP_Query($args);
             $('.wpaicg_modal_content .wpaicg_chatbot_chat_excerpt').addClass('asdisabled');
             $('.wpaicg_modal_content .wpaicg_chatbot_embedding_type').removeClass('asdisabled');
             $('.wpaicg_modal_content .wpaicg_chatbot_embedding_type').removeAttr('disabled');
+            $('.wpaicg_modal_content .wpaicg_chatbot_embedding_index').removeClass('asdisabled');
+            $('.wpaicg_modal_content .wpaicg_chatbot_embedding_index').removeAttr('disabled');
             $('.wpaicg_modal_content .wpaicg_chatbot_embedding_top').removeClass('asdisabled');
             $('.wpaicg_modal_content .wpaicg_chatbot_embedding_top').removeAttr('disabled');
         });
@@ -1869,6 +1892,8 @@ $wpaicg_bots = new WP_Query($args);
             $('.wpaicg_modal_content .wpaicg_chatbot_embedding').addClass('asdisabled');
             $('.wpaicg_modal_content .wpaicg_chatbot_embedding_type').addClass('asdisabled');
             $('.wpaicg_modal_content .wpaicg_chatbot_embedding_type').attr('disabled','disabled');
+            $('.wpaicg_modal_content .wpaicg_chatbot_embedding_index').addClass('asdisabled');
+            $('.wpaicg_modal_content .wpaicg_chatbot_embedding_index').attr('disabled','disabled');
             $('.wpaicg_modal_content .wpaicg_chatbot_embedding_top').addClass('asdisabled');
             $('.wpaicg_modal_content .wpaicg_chatbot_embedding_top').attr('disabled','disabled');
         });
@@ -1882,6 +1907,8 @@ $wpaicg_bots = new WP_Query($args);
                 $('.wpaicg_modal_content .wpaicg_chatbot_embedding').removeAttr('disabled');
                 $('.wpaicg_modal_content .wpaicg_chatbot_embedding_type').addClass('asdisabled');
                 $('.wpaicg_modal_content .wpaicg_chatbot_embedding_type').attr('disabled','disabled');
+                $('.wpaicg_modal_content .wpaicg_chatbot_embedding_index').addClass('asdisabled');
+                $('.wpaicg_modal_content .wpaicg_chatbot_embedding_index').attr('disabled','disabled');
                 $('.wpaicg_modal_content .wpaicg_chatbot_embedding_top').addClass('asdisabled');
                 $('.wpaicg_modal_content .wpaicg_chatbot_embedding_top').attr('disabled','disabled');
             }
@@ -1894,6 +1921,8 @@ $wpaicg_bots = new WP_Query($args);
                 $('.wpaicg_modal_content .wpaicg_chatbot_embedding').attr('disabled','disabled');
                 $('.wpaicg_modal_content .wpaicg_chatbot_embedding_type').addClass('asdisabled');
                 $('.wpaicg_modal_content .wpaicg_chatbot_embedding_type').attr('disabled','disabled');
+                $('.wpaicg_modal_content .wpaicg_chatbot_embedding_index').addClass('asdisabled');
+                $('.wpaicg_modal_content .wpaicg_chatbot_embedding_index').attr('disabled','disabled');
                 $('.wpaicg_modal_content .wpaicg_chatbot_embedding_top').addClass('asdisabled');
                 $('.wpaicg_modal_content .wpaicg_chatbot_embedding_top').attr('disabled','disabled');
             }

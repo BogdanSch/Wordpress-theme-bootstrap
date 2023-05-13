@@ -134,6 +134,8 @@ $wpaicg_chat_voice_service = isset($wpaicg_chat_widget['voice_service']) ? $wpai
 $wpaicg_google_voices = get_option('wpaicg_google_voices',[]);
 $wpaicg_roles = wp_roles()->get_names();
 $wpaicg_google_api_key = get_option('wpaicg_google_api_key', '');
+$wpaicg_pinecone_indexes = get_option('wpaicg_pinecone_indexes','');
+$wpaicg_pinecone_indexes = empty($wpaicg_pinecone_indexes) ? array() : json_decode($wpaicg_pinecone_indexes,true);
 ?>
 <style>
     .asdisabled{
@@ -964,6 +966,17 @@ if ( !empty($errors)) {
                         <input<?php echo $wpaicg_chat_embedding && $wpaicg_chat_content_aware == 'yes' ? ' checked': ''?><?php echo $wpaicg_embedding_field_disabled || $wpaicg_chat_content_aware == 'no' ? ' disabled':''?> type="checkbox" value="1" name="wpaicg_chat_embedding" id="wpaicg_chat_embedding" class="<?php echo !$wpaicg_chat_embedding && $wpaicg_chat_content_aware == 'yes' ? 'asdisabled' : ''?>">
                     </div>
                     <div class="mb-5">
+                        <label class="wpaicg-form-label"><?php echo esc_html__('Pinecone Index','gpt3-ai-content-generator')?>:</label>
+                        <select<?php echo $wpaicg_embedding_field_disabled || empty($wpaicg_chat_embedding) || $wpaicg_chat_content_aware == 'no' ? ' disabled':''?> name="wpaicg_chat_widget[embedding_index]" id="wpaicg_chat_embedding_index" class="<?php echo !$wpaicg_chat_embedding && $wpaicg_chat_content_aware == 'yes' ? 'asdisabled' : ''?>">
+                            <option value=""><?php echo esc_html__('Default','gpt3-ai-content-generator')?></option>
+                            <?php
+                            foreach($wpaicg_pinecone_indexes as $wpaicg_pinecone_index){
+                                echo '<option'.(isset($wpaicg_chat_widget['embedding_index']) && $wpaicg_chat_widget['embedding_index'] == $wpaicg_pinecone_index['url'] ? ' selected':'').' value="'.esc_html($wpaicg_pinecone_index['url']).'">'.esc_html($wpaicg_pinecone_index['name']).'</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="mb-5">
                         <label class="wpaicg-form-label"><?php echo esc_html__('Method','gpt3-ai-content-generator')?>:</label>
                         <select<?php echo $wpaicg_embedding_field_disabled || empty($wpaicg_chat_embedding) || $wpaicg_chat_content_aware == 'no' ? ' disabled':''?> name="wpaicg_chat_embedding_type" id="wpaicg_chat_embedding_type" class="<?php echo !$wpaicg_chat_embedding && $wpaicg_chat_content_aware == 'yes' ? 'asdisabled' : ''?>">
                             <option<?php echo $wpaicg_chat_embedding_type ? ' selected':'';?> value="openai"><?php echo esc_html__('Embeddings + Completion','gpt3-ai-content-generator')?></option>
@@ -1501,6 +1514,8 @@ if ( !empty($errors)) {
                 $('#wpaicg_chat_embedding_type').attr('disabled','disabled');
                 $('#wpaicg_chat_embedding_top').attr('disabled','disabled');
                 $('#wpaicg_chat_embedding_top').val(1);
+                $('#wpaicg_chat_embedding_index').attr('disabled','disabled');
+                $('#wpaicg_chat_embedding_index').addClass('asdisabled');
             }
             else{
                 $(this).prop('checked',true);
@@ -1533,6 +1548,8 @@ if ( !empty($errors)) {
                 $('#wpaicg_chat_embedding_top').val(1);
                 $('#wpaicg_chat_embedding_top').removeClass('asdisabled');
                 $('#wpaicg_chat_embedding_top').removeAttr('disabled');
+                $('#wpaicg_chat_embedding_index').removeAttr('disabled');
+                $('#wpaicg_chat_embedding_index').removeClass('asdisabled');
             }
             else{
                 $(this).prop('checked',true);
@@ -1552,6 +1569,8 @@ if ( !empty($errors)) {
                 $('#wpaicg_chat_embedding_type').addClass('asdisabled');
                 $('#wpaicg_chat_embedding_top').val(1);
                 $('#wpaicg_chat_embedding_top').addClass('asdisabled');
+                $('#wpaicg_chat_embedding_index').removeAttr('disabled');
+                $('#wpaicg_chat_embedding_index').addClass('asdisabled');
             }
             else{
                 $('#wpaicg_chat_embedding_type').removeClass('asdisabled');
@@ -1564,6 +1583,8 @@ if ( !empty($errors)) {
                 $('#wpaicg_chat_embedding_type').attr('disabled','disabled');
                 $('#wpaicg_chat_embedding_top').attr('disabled','disabled');
                 $('#wpaicg_chat_embedding_top').removeClass('asdisabled');
+                $('#wpaicg_chat_embedding_index').attr('disabled','disabled');
+                $('#wpaicg_chat_embedding_index').removeClass('asdisabled');
             }
         })
         <?php

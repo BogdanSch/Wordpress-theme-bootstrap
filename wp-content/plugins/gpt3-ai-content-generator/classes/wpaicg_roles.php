@@ -81,7 +81,8 @@ if(!class_exists('\\WPAICG\\WPAICG_Roles')) {
                     'content' => array('name' => 'Content Builder'),
                     'logs' => array('name' => 'Entries'),
                     'builder' => array('name' => 'Index Builder'),
-                    'settings' => array('name' => 'Settings')
+                    'settings' => array('name' => 'Settings'),
+                    'troubleshoot' => array('name' => 'Troubleshoot')
                 )
             ),
             'finetune' => array(

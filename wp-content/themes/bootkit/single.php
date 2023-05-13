@@ -17,16 +17,9 @@
                         by
                         <a href="<?php echo $author_URL; ?>"><?php the_author(); ?></a>
                     </h1>
-                    <h3 class="mt-2">
-                        <?php the_category(", ") ?>
+                    <h3 class="mt-2 mb-2">
+                        Category: <?php the_category(", ") ?>
                     </h3>
-                    <p>
-                        Post date:
-                        <?php the_time(get_option('date_format'));
-                        echo " ";
-                        the_time(get_option('time_format')); ?>
-                    </p>
-                    <hr>
                     <p class="card-text">
                         <?php the_content();
                         $defaults = array(
