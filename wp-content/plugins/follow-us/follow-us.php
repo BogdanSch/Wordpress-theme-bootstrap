@@ -3,7 +3,7 @@
 Plugin Name: Follow us
 Plugin URI: https://example.com/
 Text Domain: follow-us
-Description: This plugin adds follow us link to the post
+Description: This plugin adds follow us link to the post, font awesome required
 Version: 1.0
 Author: Bohdan Shcherbak
 Author URI: https://example.com/
