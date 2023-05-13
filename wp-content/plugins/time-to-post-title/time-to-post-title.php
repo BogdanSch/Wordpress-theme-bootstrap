@@ -22,8 +22,8 @@ function time_load_plugin_textdomain()
 }
 add_action('plugins_loaded', 'time_load_plugin_textdomain');
 
-// function time_shortcode($atts)
-// {
-//     return time_to_post_content($content);
-// }
-// add_shortcode('time_to_post', 'time_shortcode');
+function time_shortcode($atts, $content = "")
+{
+    return time_to_post_content($content);
+}
+add_shortcode('time_to_post', 'time_shortcode');

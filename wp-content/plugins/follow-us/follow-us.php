@@ -15,7 +15,6 @@ if ( !function_exists( 'add_action' ) ) {
     exit;
 }
 //Includes
-$plugin_dir = WP_PLUGIN_DIR . '/follow-us';
 include "includes/enqueue.php";
 //Plugin
 function follow_us_to_post_content($content)
