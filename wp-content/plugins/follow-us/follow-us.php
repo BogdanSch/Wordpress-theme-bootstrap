@@ -19,7 +19,10 @@ include "includes/enqueue.php";
 //Plugin
 function follow_us_to_post_content($content)
 {
-    return '<div class="follow"><a href="https://www.instagram.com/bogsvity_777/" target="_blank">'.__('Follow us').'<i class="fa fa-heart"></i></a></div>' . $content;
+    if(is_home()){
+        return '<div class="follow"><a href="https://www.instagram.com/bogsvity_777/" target="_blank">'.__('Follow us').'<i class="fa fa-heart"></i></a></div>' . $content;
+    }
+    return $content;
 }
 add_filter('the_content', 'follow_us_to_post_content');
 //Add localization

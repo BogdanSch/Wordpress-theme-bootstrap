@@ -12,7 +12,11 @@ Author URI: https://example.com/
 
 function time_to_post_content($content)
 {
-    return '<div class="time">' . __('Time of post creation: ', 'time-to-post-title') . get_the_time() . " " . __("Date of post creation:", 'time-to-post-title') . get_the_date() . '</div>' . $content;
+    if(is_home()){
+        return '<div class="time">' . __('Time of post creation: ', 'time-to-post-title') . get_the_time() . " " . __("Date of post creation:", 'time-to-post-title') . get_the_date() . '</div>' . $content;
+    }
+    return $content;
+    
 }
 add_filter('the_content', 'time_to_post_content');
 
