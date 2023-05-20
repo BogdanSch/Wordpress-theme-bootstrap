@@ -35,8 +35,6 @@
         ?>
     </div>
 </div>
-
-<!-- Comments List -->
 <?php
 if(have_comments()){
     foreach ($comments as $comment) {
