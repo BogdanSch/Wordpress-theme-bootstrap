@@ -52,15 +52,52 @@ $wpaicg_instant_embedding = get_option('wpaicg_instant_embedding','yes');
 $wpaicg_pinecone_indexes = get_option('wpaicg_pinecone_indexes','');
 $wpaicg_pinecone_indexes = empty($wpaicg_pinecone_indexes) ? array() : json_decode($wpaicg_pinecone_indexes,true);
 $wpaicg_pinecone_environments = array(
-    'us-west1-gcp-free' => 'GCP US-West-1 Free (N. California)',
-    'us-west1-gcp' => 'GCP US-West-1 (N. California)',
-    'us-central1-gcp' => 'GCP US-Central-1 (Iowa)',
-    'us-west4-gcp' => 'GCP US-West-4 (Las Vegas)',
-    'us-east4-gcp' =>  'GCP US-East-4 (Virginia)',
+    'asia-northeast1-gcp' => 'GCP Asia-Northeast-1 (Tokyo)',
+    'asia-northeast1-gcp-free' => 'GCP Asia-Northeast-1 Free (Tokyo)',
+    'asia-northeast2-gcp' => 'GCP Asia-Northeast-2 (Osaka)',
+    'asia-northeast2-gcp-free' => 'GCP Asia-Northeast-2 Free (Osaka)',
+    'asia-northeast3-gcp' => 'GCP Asia-Northeast-3 (Seoul)',
+    'asia-northeast3-gcp-free' => 'GCP Asia-Northeast-3 Free (Seoul)',
     'asia-southeast1-gcp' => 'GCP Asia-Southeast-1 (Singapore)',
-    'us-east1-gcp' => 'GCP US-East-1 (South Carolina)',
+    'asia-southeast1-gcp-free' => 'GCP Asia-Southeast-1 Free',
     'eu-west1-gcp' => 'GCP EU-West-1 (Ireland)',
-    'us-east1-aws' => 'AWS US-East-1 (Virginia)'
+    'eu-west1-gcp-free' => 'GCP EU-West-1 Free (Ireland)',
+    'eu-west2-gcp' => 'GCP EU-West-2 (London)',
+    'eu-west2-gcp-free' => 'GCP EU-West-2 Free (London)',
+    'eu-west3-gcp' => 'GCP EU-West-3 (Frankfurt)',
+    'eu-west3-gcp-free' => 'GCP EU-West-3 Free (Frankfurt)',
+    'eu-west4-gcp' => 'GCP EU-West-4 (Netherlands)',
+    'eu-west4-gcp-free' => 'GCP EU-West-4 Free (Netherlands)',
+    'eu-west6-gcp' => 'GCP EU-West-6 (Zurich)',
+    'eu-west6-gcp-free' => 'GCP EU-West-6 Free (Zurich)',
+    'eu-west8-gcp' => 'GCP EU-West-8 (Italy)',
+    'eu-west8-gcp-free' => 'GCP EU-West-8 Free (Italy)',
+    'eu-west9-gcp' => 'GCP EU-West-9 (France)',
+    'eu-west9-gcp-free' => 'GCP EU-West-9 Free (France)',
+    'northamerica-northeast1-gcp' => 'GCP Northamerica-Northeast1',
+    'northamerica-northeast1-gcp-free' => 'GCP Northamerica-Northeast1 Free',
+    'southamerica-northeast2-gcp' => 'GCP Southamerica-Northeast2 (Toronto)',
+    'southamerica-northeast2-gcp-free' => 'GCP Southamerica-Northeast2 Free (Toronto)',
+    'southamerica-east1-gcp' => 'GCP Southamerica-East1 (Sao Paulo)',
+    'southamerica-east1-gcp-free' => 'GCP Southamerica-East1 Free (Sao Paulo)',
+    'us-central1-gcp' => 'GCP US-Central-1 (Iowa)',
+    'us-central1-gcp-free' => 'GCP US-Central-1 Free (Iowa)',
+    'us-east1-aws' => 'AWS US-East-1 (Virginia)',
+    'us-east1-aws-free' => 'AWS US-East-1 Free (Virginia)',
+    'us-east-1-aws' => 'AWS US-East-1 (Virginia)',
+    'us-east-1-aws-free' => 'AWS US-East-1 Free (Virginia)',
+    'us-east1-gcp' => 'GCP US-East-1 (South Carolina)',
+    'us-east1-gcp-free' => 'GCP US-East-1 Free (South Carolina)',
+    'us-east4-gcp' =>  'GCP US-East-4 (Virginia)',
+    'us-east4-gcp-free' =>  'GCP US-East-4 Free (Virginia)',
+    'us-west1-gcp' => 'GCP US-West-1 (N. California)',
+    'us-west1-gcp-free' => 'GCP US-West-1 Free (N. California)',
+    'us-west2-gcp' => 'GCP US-West-2 (Oregon)',
+    'us-west2-gcp-free' => 'GCP US-West-2 Free (Oregon)',
+    'us-west3-gcp' => 'GCP US-West-3 (Salt Lake City)',
+    'us-west3-gcp-free' => 'GCP US-West-3 Free (Salt Lake City)',
+    'us-west4-gcp' => 'GCP US-West-4 (Las Vegas)',
+    'us-west4-gcp-free' => 'GCP US-West-4 Free (Las Vegas)'
 );
 if($wpaicg_embeddings_settings_updated){
     ?>
@@ -99,7 +136,7 @@ if($wpaicg_embeddings_settings_updated){
     <h3>Pinecone</h3>
     <div class="wpaicg-alert">
         <h3><?php echo esc_html__('Steps','gpt3-ai-content-generator')?></h3>
-        <p><?php echo sprintf(esc_html__('1. Begin by watching the video tutorial provided %shere%s.','gpt3-ai-content-generator'),'<a href="https://www.youtube.com/watch?v=NPMLGwFQYrY" target="_blank">','</a>')?></p>
+        <p><?php echo sprintf(esc_html__('1. Begin by watching the video tutorial provided %shere%s.','gpt3-ai-content-generator'),'<a href="https://docs.aipower.org/docs/embeddings" target="_blank">','</a>')?></p>
         <p><?php echo sprintf(esc_html__('2. Obtain your API key from %sPinecone%s.','gpt3-ai-content-generator'),'<a href="https://www.pinecone.io/" target="_blank">','</a>')?></p>
         <p><?php echo esc_html__('3. Create an Index on Pinecone.','gpt3-ai-content-generator')?></p>
         <p><?php echo sprintf(esc_html__('4. Ensure your dimension is set to %s1536%s.','gpt3-ai-content-generator'),'<b>','</b>')?></p>
@@ -124,6 +161,7 @@ if($wpaicg_embeddings_settings_updated){
                 }
                 ?>
                 </select>
+                <p class="description">Can't find your environment? Let us know at <a href="mailto:support@aipower.org">support@aipower.org</a></p>
             </td>
         </tr>
         <tr>

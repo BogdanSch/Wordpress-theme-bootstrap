@@ -585,28 +585,35 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                 $wpaicg_embedding_content = '';
                 if($wpaicg_chat_embedding){
                     /*Using embeddings only*/
-                    $wpaicg_embeddings_result = $this->wpaicg_embeddings_result($open_ai,$wpaicg_pinecone_api, $wpaicg_pinecone_environment, $wpaicg_message, $wpaicg_chat_embedding_top);
-                    if(!$wpaicg_chat_embedding_type || empty($wpaicg_chat_embedding_type)){
-                        $wpaicg_result['status'] = $wpaicg_embeddings_result['status'];
-                        $wpaicg_result['data'] = empty($wpaicg_embeddings_result['data']) ? $wpaicg_chat_no_answer : $wpaicg_embeddings_result['data'];
-                        $wpaicg_result['msg'] = empty($wpaicg_embeddings_result['data']) ? $wpaicg_chat_no_answer : $wpaicg_embeddings_result['data'];
-                        $this->wpaicg_save_chat_log($wpaicg_chat_log_id, $wpaicg_chat_log_data, 'ai',$wpaicg_result['data']);
-                        wp_send_json($wpaicg_result);
-                        exit;
+                    $namespace = false;
+                    if(isset($_REQUEST['namespace']) && !empty($_REQUEST['namespace'])){
+                        $namespace = sanitize_text_field($_REQUEST['namespace']);
                     }
-                    else{
-                        $wpaicg_result['status'] = $wpaicg_embeddings_result['status'];
-                        if($wpaicg_result['status'] == 'error'){
+                    $wpaicg_embeddings_result = $this->wpaicg_embeddings_result($open_ai,$wpaicg_pinecone_api, $wpaicg_pinecone_environment, $wpaicg_message, $wpaicg_chat_embedding_top,$namespace);
+                    if($wpaicg_embeddings_result['status'] == 'empty'){
+                        $wpaicg_chat_with_embedding = false;
+                    }
+                    else {
+                        if (!$wpaicg_chat_embedding_type || empty($wpaicg_chat_embedding_type)) {
+                            $wpaicg_result['status'] = $wpaicg_embeddings_result['status'];
+                            $wpaicg_result['data'] = empty($wpaicg_embeddings_result['data']) ? $wpaicg_chat_no_answer : $wpaicg_embeddings_result['data'];
                             $wpaicg_result['msg'] = empty($wpaicg_embeddings_result['data']) ? $wpaicg_chat_no_answer : $wpaicg_embeddings_result['data'];
-                            $this->wpaicg_save_chat_log($wpaicg_chat_log_id, $wpaicg_chat_log_data, 'ai',$wpaicg_result['data']);
+                            $this->wpaicg_save_chat_log($wpaicg_chat_log_id, $wpaicg_chat_log_data, 'ai', $wpaicg_result['data']);
                             wp_send_json($wpaicg_result);
                             exit;
+                        } else {
+                            $wpaicg_result['status'] = $wpaicg_embeddings_result['status'];
+                            if ($wpaicg_result['status'] == 'error') {
+                                $wpaicg_result['msg'] = empty($wpaicg_embeddings_result['data']) ? $wpaicg_chat_no_answer : $wpaicg_embeddings_result['data'];
+                                $this->wpaicg_save_chat_log($wpaicg_chat_log_id, $wpaicg_chat_log_data, 'ai', $wpaicg_result['data']);
+                                wp_send_json($wpaicg_result);
+                                exit;
+                            } else {
+                                $wpaicg_total_tokens += $wpaicg_embeddings_result['tokens']; // Add embedding tokens
+                                $wpaicg_embedding_content = $wpaicg_embeddings_result['data'];
+                            }
+                            $wpaicg_chat_with_embedding = true;
                         }
-                        else{
-                            $wpaicg_total_tokens += $wpaicg_embeddings_result['tokens']; // Add embedding tokens
-                            $wpaicg_embedding_content = $wpaicg_embeddings_result['data'];
-                        }
-                        $wpaicg_chat_with_embedding = true;
                     }
                 }
                 if ($wpaicg_chat_remember_conversation == 'yes') {
@@ -791,7 +798,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                         if(is_user_logged_in() && $wpaicg_limited_tokens){
                             WPAICG_Account::get_instance()->save_log('chat', $wpaicg_total_tokens);
                         }
-//                        $wpaicg_result['prompt'] = $prompt;
+                        //$wpaicg_result['prompt'] = $prompt;
                         $wpaicg_result['status'] = 'success';
                         $wpaicg_result['log'] = $wpaicg_chat_log_id;
                         //$wpaicg_result['data_request'] = $wpaicg_data_request;
@@ -886,7 +893,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
             }
         }
 
-        public function wpaicg_embeddings_result($open_ai,$wpaicg_pinecone_api,$wpaicg_pinecone_environment,$wpaicg_message, $wpaicg_chat_embedding_top)
+        public function wpaicg_embeddings_result($open_ai,$wpaicg_pinecone_api,$wpaicg_pinecone_environment,$wpaicg_message, $wpaicg_chat_embedding_top, $namespace = false)
         {
             $result = array('status' => 'error','data' => '');
             if(!empty($wpaicg_pinecone_api) && !empty($wpaicg_pinecone_environment) ) {
@@ -905,12 +912,16 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                             'Content-Type' => 'application/json',
                             'Api-Key' => $wpaicg_pinecone_api
                         );
+                        $pinecone_body = array(
+                            'vector' => $embedding,
+                            'topK' => $wpaicg_chat_embedding_top
+                        );
+                        if($namespace){
+                            $pinecone_body['namespace'] = $namespace;
+                        }
                         $response = wp_remote_post('https://' . $wpaicg_pinecone_environment . '/query', array(
                             'headers' => $headers,
-                            'body' => json_encode(array(
-                                'vector' => $embedding,
-                                'topK' => $wpaicg_chat_embedding_top
-                            ))
+                            'body' => json_encode($pinecone_body)
                         ));
                         if (is_wp_error($response)) {
                             $result['data'] = esc_html($response->get_error_message());
@@ -928,6 +939,9 @@ if(!class_exists('\\WPAICG\\WPAICG_Chat')) {
                                     }
                                     $result['data'] = $data;
                                     $result['status'] = 'success';
+                                }
+                                else{
+                                    $result['status'] = 'empty';
                                 }
                             }
                             else{

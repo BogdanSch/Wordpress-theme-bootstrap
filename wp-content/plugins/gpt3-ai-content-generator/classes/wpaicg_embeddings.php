@@ -281,7 +281,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Embeddings')) {
                 );
                 $pinecone_ids = '';
                 foreach ($ids as $id){
-                    $pinecone_ids = empty($pinecone_ids) ? 'ids='.$id : '&ids='.$id;
+                    $pinecone_ids .= empty($pinecone_ids) ? 'ids='.$id : '&ids='.$id;
                 }
                 $response = wp_remote_request('https://' . $wpaicg_pinecone_environment . '/vectors/delete?'.$pinecone_ids, array(
                     'method' => 'DELETE',
