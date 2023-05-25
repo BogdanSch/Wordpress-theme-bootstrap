@@ -31,6 +31,7 @@ if(!class_exists('\\WPAICG\\WPAICG_Roles')) {
                     'copy-paste' => array('name' => 'Copy-Paste'),
                     'google-sheets' => array('name' => 'Google Sheets'),
                     'rss' => array('name' => 'RSS'),
+                    'tweet' => array('name' => 'Twitter'),
                     'tracking' => array('name' => 'Queue'),
                     'setting' => array('name' => 'Settings')
                 )

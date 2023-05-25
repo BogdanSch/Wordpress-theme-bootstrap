@@ -1,6 +1,4 @@
 <?php
-
-
 function kc_show_carousel($content)
 {
     $args = [

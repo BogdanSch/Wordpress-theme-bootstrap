@@ -18,7 +18,7 @@
                 }
                 ?>
             </ul>
-        </div><!-- #top-social end -->
+        </div>
         <p class="m-0 text-center text-white">Copyright &copy; All rights reserved by Bohdan Shcherbak!</p>
     </div>
 </footer>
