@@ -1,6 +1,4 @@
 <?php
-
-
 function kc_enqueue_scripts()
 {
     wp_register_style('kc_docs_theme', plugins_url('/assets/css/docs.theme.min.css', KC_PLUGIN_URL));
