@@ -1,13 +1,12 @@
 <?php
 /*
 Plugin Name: Follow us
-Plugin URI: https://example.com/
 Text Domain: follow-us
 Description: This plugin adds follow us link to the post, font awesome required
 Version: 1.0
-Author: Bohdan Shcherbak
+Author: RoCreator
 Author URI: https://example.com/
-Ліцензія: GPL2
+License: GPL2
 */
 
 if ( !function_exists( 'add_action' ) ) {
@@ -15,15 +14,9 @@ if ( !function_exists( 'add_action' ) ) {
     exit;
 }
 //Includes
-include "includes/enqueue.php";
+include "includes/front/enqueue.php";
+include "includes/front/follow_us_post_content.php";
 //Plugin
-function follow_us_to_post_content($content)
-{
-    if(is_home()){
-        return '<div class="follow"><a href="https://www.instagram.com/bogsvity_777/" target="_blank">'.__('Follow us').'<i class="fa fa-heart"></i></a></div>' . $content;
-    }
-    return $content;
-}
 add_filter('the_content', 'follow_us_to_post_content');
 //Add localization
 function follow_load_plugin_textdomain()
