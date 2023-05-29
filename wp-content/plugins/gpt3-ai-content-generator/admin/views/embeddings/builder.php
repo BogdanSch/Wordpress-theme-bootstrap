@@ -1,6 +1,7 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 global $wpdb;
+$search = isset($_GET['wsearch']) && !empty($_GET['wsearch']) ? sanitize_text_field($_GET['wsearch']) : '';
 $wpaicg_sub_action = isset($_GET['sub']) && !empty($_GET['sub']) ? sanitize_text_field($_GET['sub']) : false;
 if($wpaicg_sub_action == 'deleteall'){
     $wpdb->query("DELETE FROM ".$wpdb->postmeta." WHERE meta_key IN ('wpaicg_indexed','wpaicg_source','wpaicg_parent','wpaicg_error_msg')");
@@ -35,8 +36,19 @@ $wpaicg_total_skips = array();
 if($wpaicg_builder_types && is_array($wpaicg_builder_types) && count($wpaicg_builder_types)) {
     $ids = implode("','",$wpaicg_builder_types);
     $commaDelimitedPlaceholders = implode(',', array_fill(0, count($wpaicg_builder_types), '%s'));
-    $wpaicg_total_errors = $wpdb->get_results($wpdb->prepare("SELECT p.ID,p.post_title FROM " . $wpdb->posts . " p LEFT JOIN " . $wpdb->postmeta . " m ON m.post_id = p.ID WHERE p.post_type IN ($commaDelimitedPlaceholders) AND m.meta_key='wpaicg_indexed' AND m.meta_value='error'",$wpaicg_builder_types));
-    $wpaicg_total_skips = $wpdb->get_results($wpdb->prepare("SELECT p.ID,p.post_title FROM " . $wpdb->posts . " p LEFT JOIN " . $wpdb->postmeta . " m ON m.post_id = p.ID WHERE p.post_type IN ($commaDelimitedPlaceholders) AND m.meta_key='wpaicg_indexed' AND m.meta_value='skip'",$wpaicg_builder_types));
+
+    if($wpaicg_builder_sub == 'errors' && !empty($search)){
+        $wpaicg_total_errors = $wpdb->get_results($wpdb->prepare("SELECT p.ID,p.post_title FROM " . $wpdb->posts . " p LEFT JOIN " . $wpdb->postmeta . " m ON m.post_id = p.ID WHERE p.post_type IN ($commaDelimitedPlaceholders) AND m.meta_key='wpaicg_indexed' AND m.meta_value='error'",$wpaicg_builder_types)." AND p.post_title LIKE '%".$wpdb->esc_like($search)."%'");
+    }
+    else{
+        $wpaicg_total_errors = $wpdb->get_results($wpdb->prepare("SELECT p.ID,p.post_title FROM " . $wpdb->posts . " p LEFT JOIN " . $wpdb->postmeta . " m ON m.post_id = p.ID WHERE p.post_type IN ($commaDelimitedPlaceholders) AND m.meta_key='wpaicg_indexed' AND m.meta_value='error'",$wpaicg_builder_types));
+    }
+    if($wpaicg_builder_sub == 'skip' && !empty($search)){
+        $wpaicg_total_skips = $wpdb->get_results($wpdb->prepare("SELECT p.ID,p.post_title FROM " . $wpdb->posts . " p LEFT JOIN " . $wpdb->postmeta . " m ON m.post_id = p.ID WHERE p.post_type IN ($commaDelimitedPlaceholders) AND m.meta_key='wpaicg_indexed' AND m.meta_value='skip'",$wpaicg_builder_types)." AND p.post_title LIKE '%".$wpdb->esc_like($search)."%'");
+    }
+    else{
+        $wpaicg_total_skips = $wpdb->get_results($wpdb->prepare("SELECT p.ID,p.post_title FROM " . $wpdb->posts . " p LEFT JOIN " . $wpdb->postmeta . " m ON m.post_id = p.ID WHERE p.post_type IN ($commaDelimitedPlaceholders) AND m.meta_key='wpaicg_indexed' AND m.meta_value='skip'",$wpaicg_builder_types));
+    }
 }
 ?>
 <style>

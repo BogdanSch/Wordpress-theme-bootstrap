@@ -36,7 +36,7 @@ $wpaicg_trackings_total_sql = "SELECT COUNT(*) FROM ".$wpdb->posts." p WHERE ".$
 $wpaicg_trackings = $wpdb->get_results($wpaicg_trackings_sql);
 $wpaicg_trackings_total = $wpdb->get_var( $wpaicg_trackings_total_sql );
 ?>
-<h2>Bulk Tracking</h2>
+<p>Bulk Tracking <a href="https://docs.aipower.org/docs/AutoGPT/auto-content-writer/bulk-editor#monitoring" target="_blank">?</a></p>
 <form action="" method="get">
     <input type="hidden" name="page" value="wpaicg_bulk_content">
     <input type="hidden" name="wpaicg_action" value="tracking">
